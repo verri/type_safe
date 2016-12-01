@@ -286,3 +286,254 @@ TEST_CASE("integer")
         REQUIRE(static_cast<int>(i) == 10);
     }
 }
+
+TEST_CASE("integer with default constructor")
+{
+    using int_t = integer<int, arithmetic_policy_default, true>;
+
+    SECTION("constructor")
+    {
+        int_t a(0);
+        REQUIRE(static_cast<int>(a) == 0);
+        int_t b(32);
+        REQUIRE(static_cast<int>(b) == 32);
+        int_t c(-25);
+        REQUIRE(static_cast<int>(c) == -25);
+        int_t d = {};
+        REQUIRE(static_cast<int>(d) == int{});
+    }
+    SECTION("assignment")
+    {
+        int_t a(0);
+        a = 32;
+        REQUIRE(static_cast<int>(a) == 32);
+        a = -25;
+        REQUIRE(static_cast<int>(a) == -25);
+    }
+    SECTION("unary")
+    {
+        int_t a(13);
+        REQUIRE(static_cast<int>(+a) == static_cast<int>(a));
+        REQUIRE(static_cast<int>(-a) == -static_cast<int>(a));
+    }
+    SECTION("increment")
+    {
+        int_t a(0);
+        REQUIRE(static_cast<int>(++a) == 1);
+        REQUIRE(static_cast<int>(a++) == 1);
+        REQUIRE(static_cast<int>(a) == 2);
+    }
+    SECTION("decrement")
+    {
+        int_t a(0);
+        REQUIRE(static_cast<int>(--a) == -1);
+        REQUIRE(static_cast<int>(a--) == -1);
+        REQUIRE(static_cast<int>(a) == -2);
+    }
+    SECTION("addition")
+    {
+        int_t wrapper(0);
+        int   normal(0);
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper += 5;
+        normal += 5;
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper = wrapper + (-23);
+        normal  = normal + (-23);
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper = 22 + wrapper;
+        normal  = 22 + normal;
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper = int_t(-4) + wrapper;
+        normal  = (-4) + normal;
+        REQUIRE(static_cast<int>(wrapper) == normal);
+    }
+    SECTION("subtraction")
+    {
+        int_t wrapper(0);
+        int   normal(0);
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper -= 5;
+        normal -= 5;
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper = wrapper - (-23);
+        normal  = normal - (-23);
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper = 22 - wrapper;
+        normal  = 22 - normal;
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper = int_t(-4) - wrapper;
+        normal  = (-4) - normal;
+        REQUIRE(static_cast<int>(wrapper) == normal);
+    }
+    SECTION("multiplication")
+    {
+        int_t wrapper(1);
+        int   normal(1);
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper *= 5;
+        normal *= 5;
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper = wrapper * (-23);
+        normal  = normal * (-23);
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper = 22 * wrapper;
+        normal  = 22 * normal;
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper = int_t(-4) * wrapper;
+        normal  = (-4) * normal;
+        REQUIRE(static_cast<int>(wrapper) == normal);
+    }
+    SECTION("division")
+    {
+        int_t wrapper(23 * 5);
+        int   normal(23 * 5);
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper /= 5;
+        normal /= 5;
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper = wrapper / (-23);
+        normal  = normal / (-23);
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper = 22 / wrapper;
+        normal  = 22 / normal;
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper = int_t(-4) / wrapper;
+        normal  = (-4) / normal;
+        REQUIRE(static_cast<int>(wrapper) == normal);
+    }
+    SECTION("modulo")
+    {
+        int_t wrapper(24 * 6);
+        int   normal(24 * 6);
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper %= 5;
+        normal %= 5;
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper = wrapper % (-23);
+        normal  = normal % (-23);
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper = 22 % wrapper;
+        normal  = 22 % normal;
+        REQUIRE(static_cast<int>(wrapper) == normal);
+
+        wrapper = int_t(-4) % wrapper;
+        normal  = (-4) % normal;
+        REQUIRE(static_cast<int>(wrapper) == normal);
+    }
+    SECTION("comparision")
+    {
+        // ==
+        REQUIRE(bool(int_t(4) == int_t(4)));
+        REQUIRE(!(int_t(5) == int_t(4)));
+
+        REQUIRE(bool(4 == int_t(4)));
+        REQUIRE(!(5 == int_t(4)));
+
+        REQUIRE(bool(int_t(4) == 4));
+        REQUIRE(!(int_t(5) == 4));
+
+        // !=
+        REQUIRE(bool(int_t(5) != int_t(4)));
+        REQUIRE(!(int_t(4) != int_t(4)));
+
+        REQUIRE(bool(5 != int_t(4)));
+        REQUIRE(!(4 != int_t(4)));
+
+        REQUIRE(bool(int_t(5) != 4));
+        REQUIRE(!(int_t(4) != 4));
+
+        // <
+        REQUIRE(bool(int_t(4) < int_t(5)));
+        REQUIRE(!(int_t(5) < int_t(4)));
+        REQUIRE(!(int_t(4) < int_t(4)));
+
+        REQUIRE(bool(4 < int_t(5)));
+        REQUIRE(!(5 < int_t(4)));
+        REQUIRE(!(4 < int_t(4)));
+
+        REQUIRE(bool(int_t(4) < 5));
+        REQUIRE(!(int_t(5) < 4));
+        REQUIRE(!(int_t(4) < 4));
+
+        // <=
+        REQUIRE(bool(int_t(4) <= int_t(5)));
+        REQUIRE(!(int_t(5) <= int_t(4)));
+        REQUIRE(bool(int_t(4) <= int_t(4)));
+
+        REQUIRE(bool(4 <= int_t(5)));
+        REQUIRE(!(5 <= int_t(4)));
+        REQUIRE(bool(4 <= int_t(4)));
+
+        REQUIRE(bool(int_t(4) <= 5));
+        REQUIRE(!(int_t(5) <= 4));
+        REQUIRE(bool(int_t(4) <= 4));
+
+        // >
+        REQUIRE(bool(int_t(5) > int_t(4)));
+        REQUIRE(!(int_t(4) > int_t(5)));
+        REQUIRE(!(int_t(5) > int_t(5)));
+
+        REQUIRE(bool(5 > int_t(4)));
+        REQUIRE(!(4 > int_t(5)));
+        REQUIRE(!(5 > int_t(5)));
+
+        REQUIRE(bool(int_t(5) > 4));
+        REQUIRE(!(int_t(4) > 5));
+        REQUIRE(!(int_t(5) > 5));
+
+        // >=
+        REQUIRE(bool(int_t(5) >= int_t(4)));
+        REQUIRE(!(int_t(4) >= int_t(5)));
+        REQUIRE(bool(int_t(5) >= int_t(5)));
+
+        REQUIRE(bool(5 >= int_t(4)));
+        REQUIRE(!(4 >= int_t(5)));
+        REQUIRE(bool(5 >= int_t(5)));
+
+        REQUIRE(bool(int_t(5) >= 4));
+        REQUIRE(!(int_t(4) >= 5));
+        REQUIRE(bool(int_t(5) >= 5));
+    }
+    SECTION("make_(un)signed")
+    {
+        int_t             a = 5;
+        integer<unsigned, arithmetic_policy_default, true> b = make_unsigned(a);
+        REQUIRE(static_cast<unsigned>(b) == 5);
+
+        b = 125u;
+        a = make_signed(b);
+        REQUIRE(static_cast<int>(a) == 125);
+    }
+    SECTION("i/o")
+    {
+        std::ostringstream out;
+        std::istringstream in("10");
+
+        int_t i(0);
+        out << i;
+        REQUIRE(out.str() == "0");
+
+        in >> i;
+        REQUIRE(static_cast<int>(i) == 10);
+    }
+}
